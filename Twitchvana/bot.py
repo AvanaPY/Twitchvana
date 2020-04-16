@@ -140,7 +140,7 @@ class Bot():
 
         self.event_join()
 
-        thread = threading.Thread(target=run, args=(self,))
+        thread = threading.Thread(target=self.run)
         thread.setDaemon(True)
         thread.start()
 
@@ -181,6 +181,28 @@ class Bot():
         """
         self._send_socket_msg(f'PRIVMSG #{channel} :{msg}')
 
+    def run(self):
+        """
+            Runs the bot.
+        """
+        while True:
+            try:
+                msg = self.socket.recv(4096)
+            except Exception as e:
+                print(f'ERROR Error {str(e)} occured.')
+                sys.exit(0)
+            else:
+
+                data, msg = split_socket_data(msg.decode())
+                
+                if not data: continue
+
+                # Check if it's the PING message and respond 
+                if msg == 'PING :tmi.twitch.tv':
+                    self._send_socket_msg('PONG :tmi.twitch.tv')
+                else:
+                    context = Context(self, data, msg)
+                    self.event_message(context)
 
 def split_socket_data(msg):
     """
@@ -198,26 +220,3 @@ def split_socket_data(msg):
     data = data[0]
     msg = msg.replace(data, '').replace('\r\n', '')
     return data, msg
-
-def run(bot : Bot):
-    """
-        Runs a Bot
-    """
-    while True:
-        try:
-            msg = bot.socket.recv(4096)
-        except:
-            print(f'ERROR Error occured.')
-            sys.exit(0)
-        else:
-
-            data, msg = split_socket_data(msg.decode())
-            
-            if not data: continue
-
-            # Check if it's the PING message and respond 
-            if msg == 'PING :tmi.twitch.tv':
-                bot._send_socket_msg('PONG :tmi.twitch.tv')
-            else:
-                context = Context(bot, data, msg)
-                bot.event_message(context)
