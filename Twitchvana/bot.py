@@ -5,15 +5,11 @@ import re
 import random
 import time
 
-from Twitchvana.tsocket import create_socket
-from Twitchvana.channel import Channel
-from socket import socket
-from Twitchvana.context import Context
-import Twitchvana.command as command
-from Twitchvana.command import Command
-import Twitchvana.errors as errors
-
-import Twitchvana.errors as errors
+from .tsocket import create_socket
+from .channel import Channel
+from .context import Context
+from .command import command, Command, stored_commands
+from .errors import CommandNotFound, CommandExists, InvalidChannel
 
 class Bot():
     """
@@ -33,7 +29,7 @@ class Bot():
 
         self.global_commands = {}
 
-        for com in command.stored_commands:
+        for com in stored_commands:
             try:
                 self.add_command(com)
             except Exception as e:
@@ -86,14 +82,14 @@ class Bot():
         if not command.name:
             raise ValueError('Command name is None or empty')
         if command.name in self.global_commands:    
-            raise errors.CommandExists(command.name)
+            raise CommandExists(command.name)
         
         if not command.channel:
             self.global_commands[command.name] = command
 
         else:
             if not command.channel in self.channels:
-                raise errors.InvalidChannel(command.channel)
+                raise InvalidChannel(command.channel)
             
             self.channels[command.channel].add_command(command)
 
@@ -101,7 +97,8 @@ class Bot():
         if channel in self.channels:
             com = self.channels[channel].get_command(name)
             return com
-        raise errors.InvalidChannel(channel)
+        raise InvalidChannel(channel)
+    
     # Decorators
 
     def event(self, com):

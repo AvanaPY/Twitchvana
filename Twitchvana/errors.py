@@ -1,4 +1,4 @@
-class CommadNotFound(Exception):
+class CommandNotFound(Exception):
     """
         Command does not exist.
     """

@@ -1,5 +1,5 @@
 from socket import socket
-from Twitchvana.irc_settings import HOST, PORT
+from .irc_settings import HOST, PORT
 
 class TSocket(socket):
     """

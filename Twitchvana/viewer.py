@@ -1,5 +1,5 @@
 import requests
-from Twitchvana.user_data_fetcher import get_user_data, get_user_ids
+from .user_data_fetcher import get_user_data, get_user_ids
 
 class Viewer:
     """

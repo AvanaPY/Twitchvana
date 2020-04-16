@@ -1,5 +1,5 @@
 import re
-from Twitchvana.viewer import Viewer
+from .viewer import Viewer
 class Context:
     """
         Context object that is created from a message received by the twitch servers. You should never need to create these

@@ -1,4 +1,4 @@
-import Twitchvana.errors as errors
+from .errors import CommandExists, CommandNotFound
 
 class Channel:
     """
@@ -24,7 +24,7 @@ class Channel:
         """
 
         if command.name in self.commands:
-            raise errors.CommandExists(command.name)
+            raise CommandExists(command.name)
 
         self.commands[command.name] = command
 
@@ -36,13 +36,13 @@ class Channel:
                 CommandNotFound if command doesn't exist.
         """
         if not name in self.commands:
-            raise errors.CommadNotFound(name)
+            raise CommandNotFound(name)
         
         return self.commands[name]
 
     def remove_command(self, name):
         if not name in self.commands:
-            raise errors.CommadNotFound(name)
+            raise CommandNotFound(name)
         del self.commands[name]
 
     def send(self, msg: str):
