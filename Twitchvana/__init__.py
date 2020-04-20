@@ -1,3 +1,4 @@
+__version__ = '1.0.0'
 from .bot import Bot
 from .channel import Channel
 from .command import Command, command
